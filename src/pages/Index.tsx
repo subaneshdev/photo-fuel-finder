@@ -8,6 +8,7 @@ import DailyProgress from "../components/DailyProgress";
 import FoodHistory from "../components/FoodHistory";
 import { FoodItem } from "../types/food";
 import { recognizeFood } from "../services/foodRecognition";
+import { Card } from "../components/ui/card";
 
 const DEFAULT_CALORIE_GOAL = 2000;
 

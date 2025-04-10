@@ -28,7 +28,9 @@ const DailyProgress = ({ currentCalories, goalCalories }: DailyProgressProps) =>
           <Progress 
             value={progressPercentage} 
             className="h-2" 
-            indicatorClassName={progressColor}
+            // Using className for the indicator instead of indicatorClassName
+            // The Progress component doesn't have indicatorClassName prop
+            indicator={progressColor}
           />
           <div className="flex justify-between text-sm">
             <div>
