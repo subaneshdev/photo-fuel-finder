@@ -1,4 +1,3 @@
-
 import { FoodItem } from "../types/food";
 
 // Nutritional database for common foods (fallback and enhancement)
@@ -15,9 +14,8 @@ const foodDatabase: Record<string, Omit<FoodItem, "id" | "timestamp" | "imageUrl
   "steak": { name: "Steak", calories: 250, protein: 25, carbs: 0, fat: 16 },
 };
 
-// OpenAI API key - this is a publishable key for client-side usage
-// In a production app, this should be handled by a backend service
-const OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"; // Replace with your actual key
+// Replace this with your actual OpenAI API key
+const OPENAI_API_KEY = "sk-your-openai-api-key-here";
 
 export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
   try {
