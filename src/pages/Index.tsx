@@ -8,7 +8,7 @@ import DailyProgress from "../components/DailyProgress";
 import FoodHistory from "../components/FoodHistory";
 import { FoodItem } from "../types/food";
 import { recognizeFood } from "../services/foodRecognition";
-import { Card } from "../components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 
 const DEFAULT_CALORIE_GOAL = 2000;
 
@@ -51,12 +51,14 @@ const Index = () => {
 
   const handleUpload = async (file: File) => {
     setIsProcessing(true);
+    toast.info("Analyzing your food...", { duration: 3000 });
     
     try {
       const result = await recognizeFood(file);
       
       if (result) {
         setCurrentItem(result);
+        toast.success(`Identified: ${result.name}`);
       } else {
         toast.error("Could not recognize food in the image. Please try another photo.");
       }
@@ -126,14 +128,16 @@ const Index = () => {
             />
             
             <Card className="p-4">
-              <h3 className="font-medium mb-2">How to use NutriVision</h3>
-              <ol className="text-sm text-gray-600 space-y-2 list-decimal pl-5">
-                <li>Take a photo of your food or upload an existing image</li>
-                <li>Our AI will identify the food and calculate calories</li>
-                <li>Review the nutritional information</li>
-                <li>Add it to your daily food log</li>
-                <li>Track your progress toward your daily goal</li>
-              </ol>
+              <CardContent>
+                <h3 className="font-medium mb-2">How to use NutriVision</h3>
+                <ol className="text-sm text-gray-600 space-y-2 list-decimal pl-5">
+                  <li>Take a photo of your food or upload an existing image</li>
+                  <li>Our AI will identify the food and calculate calories</li>
+                  <li>Review the nutritional information</li>
+                  <li>Add it to your daily food log</li>
+                  <li>Track your progress toward your daily goal</li>
+                </ol>
+              </CardContent>
             </Card>
           </div>
         </div>

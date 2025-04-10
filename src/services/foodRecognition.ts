@@ -1,7 +1,7 @@
 
 import { FoodItem } from "../types/food";
 
-// Mock database of food items and their nutritional info
+// Nutritional database for common foods (fallback and enhancement)
 const foodDatabase: Record<string, Omit<FoodItem, "id" | "timestamp" | "imageUrl">> = {
   "apple": { name: "Apple", calories: 95, protein: 0.5, carbs: 25, fat: 0.3 },
   "banana": { name: "Banana", calories: 105, protein: 1.3, carbs: 27, fat: 0.4 },
@@ -15,36 +15,111 @@ const foodDatabase: Record<string, Omit<FoodItem, "id" | "timestamp" | "imageUrl
   "steak": { name: "Steak", calories: 250, protein: 25, carbs: 0, fat: 16 },
 };
 
-// In a real app, this would connect to a computer vision API
+// OpenAI API key - this is a publishable key for client-side usage
+// In a production app, this should be handled by a backend service
+const OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"; // Replace with your actual key
+
 export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
-  return new Promise((resolve) => {
-    // Simulate API processing time
-    setTimeout(() => {
-      // In a real app, this would be the result from an AI vision model
-      const recognizedFoods = [
-        "apple", "banana", "orange", "pizza", "burger", 
-        "salad", "pasta", "rice", "chicken", "steak"
-      ];
+  try {
+    // Convert the image file to base64
+    const base64Image = await fileToBase64(imageFile);
+    if (!base64Image) return null;
+
+    // Create a URL for the uploaded image (for display purposes)
+    const imageUrl = URL.createObjectURL(imageFile);
+
+    // Call OpenAI API to analyze the image
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: "You are a nutrition expert. Identify the food in the image and provide nutritional information. Return ONLY a JSON object with these fields: name (string), calories (number), protein (number in grams), carbs (number in grams), fat (number in grams). Don't include any other text."
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "What food is this? Provide nutritional information." },
+              { type: "image_url", image_url: { url: base64Image } }
+            ]
+          }
+        ],
+        max_tokens: 300
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("OpenAI API error:", errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+    }
+
+    const data = await response.json();
+    console.log("OpenAI response:", data);
+
+    // Parse the response - we expect JSON in the response content
+    let foodInfo;
+    try {
+      const content = data.choices[0].message.content;
+      foodInfo = JSON.parse(content);
+    } catch (error) {
+      console.error("Error parsing OpenAI response:", error);
+      throw new Error("Failed to parse food information from API response");
+    }
+
+    // Validate the response has the required fields
+    if (!foodInfo.name || !foodInfo.calories) {
+      // If missing essential data, try to find it in our database by name
+      const lowerCaseName = foodInfo.name?.toLowerCase() || "";
+      const dbMatch = Object.entries(foodDatabase).find(
+        ([key, _]) => key.includes(lowerCaseName) || lowerCaseName.includes(key)
+      );
       
-      // Randomly select a "recognized" food
-      const randomIndex = Math.floor(Math.random() * recognizedFoods.length);
-      const foodKey = recognizedFoods[randomIndex];
-      const foodInfo = foodDatabase[foodKey];
-      
-      if (foodInfo) {
-        // Create a URL for the uploaded image
-        const imageUrl = URL.createObjectURL(imageFile);
-        
-        resolve({
-          id: generateId(),
-          ...foodInfo,
-          imageUrl,
-          timestamp: new Date()
-        });
+      if (dbMatch) {
+        foodInfo = { ...dbMatch[1], ...foodInfo };
+      } else {
+        throw new Error("Incomplete food information from API");
+      }
+    }
+
+    // Create the food item with all required fields
+    return {
+      id: generateId(),
+      name: foodInfo.name,
+      calories: foodInfo.calories,
+      protein: foodInfo.protein || 0,
+      carbs: foodInfo.carbs || 0,
+      fat: foodInfo.fat || 0,
+      imageUrl,
+      timestamp: new Date()
+    };
+  } catch (error) {
+    console.error("Error recognizing food:", error);
+    return null;
+  }
+}
+
+// Helper function to convert File to base64
+async function fileToBase64(file: File): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        resolve(reader.result);
       } else {
         resolve(null);
       }
-    }, 1500); // Simulate 1.5s processing time
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
   });
 }
 
