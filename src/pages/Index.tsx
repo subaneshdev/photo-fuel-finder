@@ -6,6 +6,7 @@ import FoodUpload from "../components/FoodUpload";
 import CalorieDisplay from "../components/CalorieDisplay";
 import DailyProgress from "../components/DailyProgress";
 import FoodHistory from "../components/FoodHistory";
+import ApiKeyForm from "../components/ApiKeyForm";
 import { FoodItem } from "../types/food";
 import { recognizeFood } from "../services/foodRecognition";
 import { Card, CardContent } from "../components/ui/card";
@@ -50,6 +51,12 @@ const Index = () => {
   }, [calorieGoal]);
 
   const handleUpload = async (file: File) => {
+    // Check if API key is set
+    if (!localStorage.getItem("openai_api_key")) {
+      toast.error("Please set your OpenAI API key first");
+      return;
+    }
+    
     setIsProcessing(true);
     toast.info("Analyzing your food...", { duration: 3000 });
     
@@ -99,6 +106,8 @@ const Index = () => {
               Track Your Food
             </h2>
             
+            <ApiKeyForm />
+            
             {!currentItem && (
               <FoodUpload onUpload={handleUpload} isProcessing={isProcessing} />
             )}
@@ -131,6 +140,7 @@ const Index = () => {
               <CardContent>
                 <h3 className="font-medium mb-2">How to use NutriVision</h3>
                 <ol className="text-sm text-gray-600 space-y-2 list-decimal pl-5">
+                  <li>Add your OpenAI API key to enable food recognition</li>
                   <li>Take a photo of your food or upload an existing image</li>
                   <li>Our AI will identify the food and calculate calories</li>
                   <li>Review the nutritional information</li>

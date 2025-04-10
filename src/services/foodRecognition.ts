@@ -1,3 +1,4 @@
+
 import { FoodItem } from "../types/food";
 
 // Nutritional database for common foods (fallback and enhancement)
@@ -14,11 +15,19 @@ const foodDatabase: Record<string, Omit<FoodItem, "id" | "timestamp" | "imageUrl
   "steak": { name: "Steak", calories: 250, protein: 25, carbs: 0, fat: 16 },
 };
 
-// Replace this with your actual OpenAI API key
-const OPENAI_API_KEY = "sk-your-openai-api-key-here";
+// Get API key from localStorage or use fallback for development
+const getOpenAIKey = (): string => {
+  return localStorage.getItem('openai_api_key') || '';
+};
 
 export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
   try {
+    const apiKey = getOpenAIKey();
+    
+    if (!apiKey) {
+      throw new Error("OpenAI API key is not set. Please set your API key in the settings.");
+    }
+    
     // Convert the image file to base64
     const base64Image = await fileToBase64(imageFile);
     if (!base64Image) return null;
@@ -30,7 +39,7 @@ export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
