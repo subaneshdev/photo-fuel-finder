@@ -1,6 +1,7 @@
 
 import { Progress } from "../components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface DailyProgressProps {
   currentCalories: number;
@@ -25,13 +26,16 @@ const DailyProgress = ({ currentCalories, goalCalories }: DailyProgressProps) =>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <Progress 
-            value={progressPercentage} 
-            className="h-2" 
-            // Using className for the indicator instead of indicatorClassName
-            // The Progress component doesn't have indicatorClassName prop
-            indicator={progressColor}
-          />
+          <div className="relative">
+            <Progress 
+              value={progressPercentage} 
+              className="h-2"
+            />
+            <div 
+              className={cn("absolute inset-0 h-full rounded-full", progressColor)}
+              style={{ transform: `translateX(-${100 - progressPercentage}%)` }}
+            />
+          </div>
           <div className="flex justify-between text-sm">
             <div>
               <span className="font-medium">{currentCalories}</span>
