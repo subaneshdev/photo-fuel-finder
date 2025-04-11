@@ -64,6 +64,12 @@ export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("OpenAI API error:", errorData);
+      
+      // Check for quota exceeded error specifically
+      if (errorData.error?.code === "insufficient_quota") {
+        throw new Error("Your OpenAI API key has exceeded its quota. Please check your OpenAI account billing status or use a different API key.");
+      }
+      
       throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
@@ -108,7 +114,7 @@ export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
     };
   } catch (error) {
     console.error("Error recognizing food:", error);
-    return null;
+    throw error; // Re-throw the error so it can be handled by the calling code
   }
 }
 

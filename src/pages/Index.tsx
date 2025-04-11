@@ -69,9 +69,18 @@ const Index = () => {
       } else {
         toast.error("Could not recognize food in the image. Please try another photo.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error recognizing food:", error);
-      toast.error("An error occurred while analyzing your food. Please try again.");
+      
+      // Check for quota issues and mark the API key as having quota problems
+      if (error.message && error.message.includes("quota")) {
+        localStorage.setItem("openai_api_quota_issue", "true");
+        toast.error("Your OpenAI API key has exceeded its quota. Please check your billing status or use a different key.", {
+          duration: 6000
+        });
+      } else {
+        toast.error("An error occurred while analyzing your food. Please try again.");
+      }
     } finally {
       setIsProcessing(false);
     }
