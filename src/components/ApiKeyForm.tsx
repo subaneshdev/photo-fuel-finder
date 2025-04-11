@@ -13,12 +13,12 @@ const ApiKeyForm = () => {
 
   useEffect(() => {
     // Check if API key is already set
-    const savedKey = localStorage.getItem("openai_api_key");
+    const savedKey = localStorage.getItem("gemini_api_key");
     if (savedKey) {
       setApiKey(savedKey);
       
       // Check if we've recorded a quota issue with this key
-      const quotaIssue = localStorage.getItem("openai_api_quota_issue");
+      const quotaIssue = localStorage.getItem("gemini_api_quota_issue");
       if (quotaIssue === "true") {
         setKeyHasQuotaIssue(true);
         setShowForm(true); // Show form if there's a quota issue
@@ -35,22 +35,22 @@ const ApiKeyForm = () => {
       return;
     }
 
-    // Basic validation for OpenAI API key format
-    if (!apiKey.startsWith("sk-")) {
-      toast.error("API key should start with 'sk-'");
+    // Basic validation for Gemini API key format (Gemini keys are typically 39 characters)
+    if (apiKey.length < 10) {
+      toast.error("API key seems too short");
       return;
     }
 
-    localStorage.setItem("openai_api_key", apiKey);
-    localStorage.removeItem("openai_api_quota_issue"); // Clear any previous quota issues
+    localStorage.setItem("gemini_api_key", apiKey);
+    localStorage.removeItem("gemini_api_quota_issue"); // Clear any previous quota issues
     setKeyHasQuotaIssue(false);
     toast.success("API key saved successfully");
     setShowForm(false);
   };
 
   const clearApiKey = () => {
-    localStorage.removeItem("openai_api_key");
-    localStorage.removeItem("openai_api_quota_issue");
+    localStorage.removeItem("gemini_api_key");
+    localStorage.removeItem("gemini_api_quota_issue");
     setApiKey("");
     setKeyHasQuotaIssue(false);
     setShowForm(true);
@@ -61,7 +61,7 @@ const ApiKeyForm = () => {
     return (
       <div className="flex items-center gap-2 py-2">
         <span className={`text-sm ${keyHasQuotaIssue ? "text-amber-600" : "text-green-600"}`}>
-          {keyHasQuotaIssue ? "⚠️ OpenAI API key has quota issues" : "OpenAI API key is set ✓"}
+          {keyHasQuotaIssue ? "⚠️ Gemini API key has quota issues" : "Gemini API key is set ✓"}
         </span>
         <Button variant="outline" size="sm" onClick={() => setShowForm(true)}>
           Change Key
@@ -73,7 +73,7 @@ const ApiKeyForm = () => {
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle>Set OpenAI API Key</CardTitle>
+        <CardTitle>Set Gemini API Key</CardTitle>
         <CardDescription>
           Your API key is stored locally in your browser and never sent to our servers.
         </CardDescription>
@@ -82,19 +82,19 @@ const ApiKeyForm = () => {
         <div className="space-y-2">
           <Input
             type="password"
-            placeholder="sk-..."
+            placeholder="Enter your Gemini API key"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
           />
           <p className="text-xs text-muted-foreground">
             Get your API key from{" "}
             <a
-              href="https://platform.openai.com/api-keys"
+              href="https://aistudio.google.com/app/apikey"
               target="_blank"
               rel="noreferrer"
               className="text-blue-500 hover:underline flex items-center gap-1 inline-flex"
             >
-              OpenAI Dashboard <ExternalLink className="h-3 w-3" />
+              Google AI Studio <ExternalLink className="h-3 w-3" />
             </a>
           </p>
           
@@ -105,18 +105,17 @@ const ApiKeyForm = () => {
                 <p className="font-medium">API Key Quota Exceeded</p>
                 <p className="mt-1">Your current API key has exceeded its usage quota. To fix this:</p>
                 <ul className="list-disc pl-5 mt-1 space-y-1">
-                  <li>Check your OpenAI account billing status</li>
-                  <li>Add a payment method if using a free tier</li>
-                  <li>Increase your spending limits</li>
+                  <li>Check your Google AI Studio account usage</li>
+                  <li>Request a higher quota if needed</li>
                   <li>Or use a different API key</li>
                 </ul>
                 <a
-                  href="https://platform.openai.com/account/billing/overview"
+                  href="https://aistudio.google.com/app/apikey"
                   target="_blank"
                   rel="noreferrer"
                   className="mt-2 text-amber-700 font-medium hover:underline flex items-center gap-1"
                 >
-                  Go to OpenAI Billing <ExternalLink className="h-3 w-3" />
+                  Go to Google AI Studio <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
             </div>
@@ -125,7 +124,7 @@ const ApiKeyForm = () => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" onClick={() => {
-          if (localStorage.getItem("openai_api_key")) {
+          if (localStorage.getItem("gemini_api_key")) {
             clearApiKey();
           } else {
             setShowForm(false);

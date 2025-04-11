@@ -16,16 +16,16 @@ const foodDatabase: Record<string, Omit<FoodItem, "id" | "timestamp" | "imageUrl
 };
 
 // Get API key from localStorage or use fallback for development
-const getOpenAIKey = (): string => {
-  return localStorage.getItem('openai_api_key') || '';
+const getGeminiKey = (): string => {
+  return localStorage.getItem('gemini_api_key') || '';
 };
 
 export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
   try {
-    const apiKey = getOpenAIKey();
+    const apiKey = getGeminiKey();
     
     if (!apiKey) {
-      throw new Error("OpenAI API key is not set. Please set your API key in the settings.");
+      throw new Error("Gemini API key is not set. Please set your API key in the settings.");
     }
     
     // Convert the image file to base64
@@ -35,54 +35,69 @@ export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
     // Create a URL for the uploaded image (for display purposes)
     const imageUrl = URL.createObjectURL(imageFile);
 
-    // Call OpenAI API to analyze the image
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Get only the base64 data without the prefix
+    const base64Data = base64Image.split(',')[1];
+
+    // Call Gemini API to analyze the image
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
+        contents: [
           {
-            role: "system",
-            content: "You are a nutrition expert. Identify the food in the image and provide nutritional information. Return ONLY a JSON object with these fields: name (string), calories (number), protein (number in grams), carbs (number in grams), fat (number in grams). Don't include any other text."
-          },
-          {
-            role: "user",
-            content: [
-              { type: "text", text: "What food is this? Provide nutritional information." },
-              { type: "image_url", image_url: { url: base64Image } }
+            parts: [
+              {
+                text: "You are a nutrition expert. Identify the food in the image and provide nutritional information. Return ONLY a JSON object with these fields: name (string), calories (number), protein (number in grams), carbs (number in grams), fat (number in grams). Don't include any other text."
+              },
+              {
+                inline_data: {
+                  mime_type: "image/jpeg",
+                  data: base64Data
+                }
+              }
             ]
           }
         ],
-        max_tokens: 300
+        generationConfig: {
+          temperature: 0.4,
+          topK: 32,
+          topP: 1,
+          maxOutputTokens: 4096,
+        }
       })
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("OpenAI API error:", errorData);
+      console.error("Gemini API error:", errorData);
       
       // Check for quota exceeded error specifically
-      if (errorData.error?.code === "insufficient_quota") {
-        throw new Error("Your OpenAI API key has exceeded its quota. Please check your OpenAI account billing status or use a different API key.");
+      if (errorData.error?.code === 429 || errorData.error?.message?.includes("quota")) {
+        localStorage.setItem("gemini_api_quota_issue", "true");
+        throw new Error("Your Gemini API key has exceeded its quota. Please check your Google AI Studio account or use a different API key.");
       }
       
-      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+      throw new Error(`Gemini API error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
-    console.log("OpenAI response:", data);
+    console.log("Gemini response:", data);
 
     // Parse the response - we expect JSON in the response content
     let foodInfo;
     try {
-      const content = data.choices[0].message.content;
-      foodInfo = JSON.parse(content);
+      const content = data.candidates[0].content.parts[0].text;
+      // Try to find JSON in the response
+      const jsonMatch = content.match(/\{[^]*\}/);
+      if (jsonMatch) {
+        foodInfo = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error("No JSON found in response");
+      }
     } catch (error) {
-      console.error("Error parsing OpenAI response:", error);
+      console.error("Error parsing Gemini response:", error);
       throw new Error("Failed to parse food information from API response");
     }
 

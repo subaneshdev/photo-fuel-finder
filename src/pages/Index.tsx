@@ -52,8 +52,8 @@ const Index = () => {
 
   const handleUpload = async (file: File) => {
     // Check if API key is set
-    if (!localStorage.getItem("openai_api_key")) {
-      toast.error("Please set your OpenAI API key first");
+    if (!localStorage.getItem("gemini_api_key")) {
+      toast.error("Please set your Gemini API key first");
       return;
     }
     
@@ -74,8 +74,8 @@ const Index = () => {
       
       // Check for quota issues and mark the API key as having quota problems
       if (error.message && error.message.includes("quota")) {
-        localStorage.setItem("openai_api_quota_issue", "true");
-        toast.error("Your OpenAI API key has exceeded its quota. Please check your billing status or use a different key.", {
+        localStorage.setItem("gemini_api_quota_issue", "true");
+        toast.error("Your Gemini API key has exceeded its quota. Please check your quota status or use a different key.", {
           duration: 6000
         });
       } else {
@@ -149,7 +149,7 @@ const Index = () => {
               <CardContent>
                 <h3 className="font-medium mb-2">How to use NutriVision</h3>
                 <ol className="text-sm text-gray-600 space-y-2 list-decimal pl-5">
-                  <li>Add your OpenAI API key to enable food recognition</li>
+                  <li>Add your Gemini API key to enable food recognition</li>
                   <li>Take a photo of your food or upload an existing image</li>
                   <li>Our AI will identify the food and calculate calories</li>
                   <li>Review the nutritional information</li>
