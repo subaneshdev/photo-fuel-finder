@@ -11,46 +11,55 @@ interface DailyProgressProps {
 const DailyProgress = ({ currentCalories, goalCalories }: DailyProgressProps) => {
   const progressPercentage = Math.min(Math.round((currentCalories / goalCalories) * 100), 100);
   
-  let progressColor = "bg-nutrition-green";
+  let progressColor = "bg-gradient-to-r from-green-400 to-green-500";
   if (progressPercentage > 85) {
-    progressColor = "bg-nutrition-yellow";
+    progressColor = "bg-gradient-to-r from-yellow-400 to-yellow-500";
   }
   if (progressPercentage >= 100) {
-    progressColor = "bg-nutrition-red";
+    progressColor = "bg-gradient-to-r from-red-400 to-red-500";
   }
   
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Daily Progress</CardTitle>
+    <Card className="w-full bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <CardHeader className="pb-2 space-y-1">
+        <CardTitle className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+          Daily Progress
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          <div className="relative">
+      <CardContent className="pb-6">
+        <div className="space-y-4">
+          <div className="relative h-4">
             <Progress 
               value={progressPercentage} 
-              className="h-2"
+              className="h-4 rounded-full bg-gray-100"
             />
             <div 
-              className={cn("absolute inset-0 h-full rounded-full", progressColor)}
+              className={cn(
+                "absolute inset-0 h-full rounded-full transition-transform duration-500",
+                progressColor
+              )}
               style={{ transform: `translateX(-${100 - progressPercentage}%)` }}
             />
           </div>
-          <div className="flex justify-between text-sm">
-            <div>
-              <span className="font-medium">{currentCalories}</span>
-              <span className="text-gray-500 ml-1">consumed</span>
+          <div className="flex justify-between items-center text-sm font-medium">
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-lg font-bold text-gray-700">{currentCalories}</span>
+              <span className="text-gray-500 text-xs">calories consumed</span>
             </div>
-            <div>
-              <span className="text-gray-500 mr-1">goal</span>
-              <span className="font-medium">{goalCalories}</span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="text-lg font-bold text-gray-700">{goalCalories}</span>
+              <span className="text-gray-500 text-xs">daily goal</span>
             </div>
           </div>
-          <div className="text-center text-sm text-gray-500">
+          <div className="text-center">
             {currentCalories <= goalCalories ? (
-              <span>{Math.max(0, goalCalories - currentCalories)} calories remaining</span>
+              <span className="text-sm font-medium text-green-600">
+                {Math.max(0, goalCalories - currentCalories)} calories remaining
+              </span>
             ) : (
-              <span className="text-nutrition-red">{currentCalories - goalCalories} calories over your goal</span>
+              <span className="text-sm font-medium text-red-500">
+                {currentCalories - goalCalories} calories over your goal
+              </span>
             )}
           </div>
         </div>
