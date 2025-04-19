@@ -1,10 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Header from "../components/Header";
 import FoodUpload from "../components/FoodUpload";
 import CalorieDisplay from "../components/CalorieDisplay";
-import DailyProgress from "../components/DailyProgress";
 import FoodHistory from "../components/FoodHistory";
 import ApiKeyForm from "../components/ApiKeyForm";
 import { FoodItem } from "../types/food";
@@ -22,13 +20,11 @@ const Index = () => {
     return saved ? parseInt(saved) : DEFAULT_CALORIE_GOAL;
   });
 
-  // Load food items from localStorage on initial render
   useEffect(() => {
     const savedItems = localStorage.getItem("foodItems");
     if (savedItems) {
       try {
         const parsedItems = JSON.parse(savedItems);
-        // Convert string timestamps back to Date objects
         const items = parsedItems.map((item: any) => ({
           ...item,
           timestamp: new Date(item.timestamp)
@@ -40,18 +36,15 @@ const Index = () => {
     }
   }, []);
 
-  // Save food items to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("foodItems", JSON.stringify(foodItems));
   }, [foodItems]);
 
-  // Save calorie goal to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("calorieGoal", calorieGoal.toString());
   }, [calorieGoal]);
 
   const handleUpload = async (file: File) => {
-    // Check if API key is set
     if (!localStorage.getItem("gemini_api_key")) {
       toast.error("Please set your Gemini API key first");
       return;
@@ -72,7 +65,6 @@ const Index = () => {
     } catch (error: any) {
       console.error("Error recognizing food:", error);
       
-      // Check for quota issues and mark the API key as having quota problems
       if (error.message && error.message.includes("quota")) {
         localStorage.setItem("gemini_api_quota_issue", "true");
         toast.error("Your Gemini API key has exceeded its quota. Please check your quota status or use a different key.", {
@@ -139,11 +131,6 @@ const Index = () => {
             <h2 className="text-xl font-semibold text-gray-900">
               Summary
             </h2>
-            
-            <DailyProgress 
-              currentCalories={totalCalories} 
-              goalCalories={calorieGoal} 
-            />
             
             <Card className="p-4">
               <CardContent>
