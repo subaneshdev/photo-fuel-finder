@@ -1,7 +1,7 @@
 
-import { Progress } from "../components/ui/progress";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { cn } from "@/lib/utils";
+import { Progress } from "./ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { CircleGauge } from "lucide-react";
 
 interface DailyProgressProps {
   currentCalories: number;
@@ -11,46 +11,55 @@ interface DailyProgressProps {
 const DailyProgress = ({ currentCalories, goalCalories }: DailyProgressProps) => {
   const progressPercentage = Math.min(Math.round((currentCalories / goalCalories) * 100), 100);
   
-  let progressColor = "bg-nutrition-green";
-  if (progressPercentage > 85) {
-    progressColor = "bg-nutrition-yellow";
-  }
-  if (progressPercentage >= 100) {
-    progressColor = "bg-nutrition-red";
-  }
-  
+  const getProgressColor = () => {
+    if (progressPercentage >= 100) return "bg-nutrition-red";
+    if (progressPercentage > 85) return "bg-nutrition-yellow";
+    return "bg-nutrition-green";
+  };
+
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-xl mx-auto mt-6 overflow-hidden bg-gradient-to-br from-white/80 to-white/50 backdrop-blur-sm border-nutrition-blue/20 shadow-lg shadow-nutrition-blue/10">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Daily Progress</CardTitle>
+        <CardTitle className="flex items-center gap-2 text-lg bg-gradient-to-r from-nutrition-blue to-nutrition-green bg-clip-text text-transparent">
+          <CircleGauge className="h-5 w-5" />
+          Daily Progress
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-          <div className="relative">
+        <div className="space-y-4">
+          <div className="relative h-4">
             <Progress 
               value={progressPercentage} 
-              className="h-2"
+              className="h-full rounded-full bg-gray-100/50"
             />
             <div 
-              className={cn("absolute inset-0 h-full rounded-full", progressColor)}
+              className={`absolute inset-0 h-full rounded-full transition-transform duration-500 ${getProgressColor()}`}
               style={{ transform: `translateX(-${100 - progressPercentage}%)` }}
             />
           </div>
           <div className="flex justify-between text-sm">
-            <div>
-              <span className="font-medium">{currentCalories}</span>
-              <span className="text-gray-500 ml-1">consumed</span>
+            <div className="space-y-1">
+              <p className="text-gray-500">Consumed</p>
+              <p className="font-medium text-xl bg-gradient-to-r from-nutrition-blue to-nutrition-red bg-clip-text text-transparent">
+                {currentCalories} cal
+              </p>
             </div>
-            <div>
-              <span className="text-gray-500 mr-1">goal</span>
-              <span className="font-medium">{goalCalories}</span>
+            <div className="space-y-1 text-right">
+              <p className="text-gray-500">Daily Goal</p>
+              <p className="font-medium text-xl bg-gradient-to-r from-nutrition-green to-nutrition-blue bg-clip-text text-transparent">
+                {goalCalories} cal
+              </p>
             </div>
           </div>
-          <div className="text-center text-sm text-gray-500">
+          <div className="text-center">
             {currentCalories <= goalCalories ? (
-              <span>{Math.max(0, goalCalories - currentCalories)} calories remaining</span>
+              <p className="text-sm text-nutrition-green font-medium">
+                {Math.max(0, goalCalories - currentCalories)} calories remaining
+              </p>
             ) : (
-              <span className="text-nutrition-red">{currentCalories - goalCalories} calories over your goal</span>
+              <p className="text-sm text-nutrition-red font-medium">
+                {currentCalories - goalCalories} calories over your goal
+              </p>
             )}
           </div>
         </div>

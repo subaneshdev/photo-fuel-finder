@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import FoodUpload from "../components/FoodUpload";
 import CalorieDisplay from "../components/CalorieDisplay";
 import FoodHistory from "../components/FoodHistory";
+import DailyProgress from "../components/DailyProgress";
 import ApiKeyForm from "../components/ApiKeyForm";
 import { FoodItem } from "../types/food";
 import { recognizeFood } from "../services/foodRecognition";
@@ -102,7 +103,12 @@ const Index = () => {
       <Header calorieGoal={calorieGoal} onChangeGoal={handleChangeGoal} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <DailyProgress 
+          currentCalories={totalCalories} 
+          goalCalories={calorieGoal} 
+        />
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
           <div className="md:col-span-2 space-y-6">
             <h2 className="text-xl font-semibold bg-gradient-to-r from-nutrition-blue to-nutrition-green bg-clip-text text-transparent">
               Track Your Food
