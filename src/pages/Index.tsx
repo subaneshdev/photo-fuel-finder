@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Header from "../components/Header";
@@ -97,13 +98,13 @@ const Index = () => {
   const totalCalories = foodItems.reduce((sum, item) => sum + item.calories, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       <Header calorieGoal={calorieGoal} onChangeGoal={handleChangeGoal} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-nutrition-blue to-nutrition-green bg-clip-text text-transparent">
               Track Your Food
             </h2>
             
@@ -128,20 +129,20 @@ const Index = () => {
           </div>
           
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-nutrition-red to-nutrition-yellow bg-clip-text text-transparent">
               Summary
             </h2>
             
-            <Card className="p-4">
+            <Card className="bg-gradient-to-br from-white/80 to-white/50 backdrop-blur-sm border-nutrition-blue/20 shadow-lg shadow-nutrition-blue/10">
               <CardContent>
-                <h3 className="font-medium mb-2">How to use NutriVision</h3>
+                <h3 className="font-medium mb-2 text-nutrition-blue">How to use NutriVision</h3>
                 <ol className="text-sm text-gray-600 space-y-2 list-decimal pl-5">
-                  <li>Add your Gemini API key to enable food recognition</li>
-                  <li>Take a photo of your food or upload an existing image</li>
-                  <li>Our AI will identify the food and calculate calories</li>
-                  <li>Review the nutritional information</li>
-                  <li>Add it to your daily food log</li>
-                  <li>Track your progress toward your daily goal</li>
+                  <li className="hover:text-nutrition-green transition-colors">Add your Gemini API key to enable food recognition</li>
+                  <li className="hover:text-nutrition-blue transition-colors">Take a photo of your food or upload an existing image</li>
+                  <li className="hover:text-nutrition-red transition-colors">Our AI will identify the food and calculate calories</li>
+                  <li className="hover:text-nutrition-yellow transition-colors">Review the nutritional information</li>
+                  <li className="hover:text-nutrition-green transition-colors">Add it to your daily food log</li>
+                  <li className="hover:text-nutrition-blue transition-colors">Track your progress toward your daily goal</li>
                 </ol>
               </CardContent>
             </Card>

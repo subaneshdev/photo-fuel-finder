@@ -23,9 +23,9 @@ const FoodHistory = ({ foodItems, onDelete }: FoodHistoryProps) => {
 
   if (foodItems.length === 0) {
     return (
-      <Card className="w-full mt-6">
+      <Card className="w-full mt-6 bg-gradient-to-br from-white/80 to-white/50 backdrop-blur-sm border-nutrition-blue/20 shadow-lg shadow-nutrition-blue/10">
         <CardHeader>
-          <CardTitle className="text-lg">Today's Food Log</CardTitle>
+          <CardTitle className="text-lg bg-gradient-to-r from-nutrition-blue to-nutrition-green bg-clip-text text-transparent">Today's Food Log</CardTitle>
           <CardDescription>No items logged today</CardDescription>
         </CardHeader>
       </Card>
@@ -38,9 +38,9 @@ const FoodHistory = ({ foodItems, onDelete }: FoodHistoryProps) => {
   );
 
   return (
-    <Card className="w-full mt-6">
+    <Card className="w-full mt-6 bg-gradient-to-br from-white/80 to-white/50 backdrop-blur-sm border-nutrition-blue/20 shadow-lg shadow-nutrition-blue/10">
       <CardHeader>
-        <CardTitle className="text-lg">Today's Food Log</CardTitle>
+        <CardTitle className="text-lg bg-gradient-to-r from-nutrition-blue to-nutrition-green bg-clip-text text-transparent">Today's Food Log</CardTitle>
         <CardDescription>
           {foodItems.length} {foodItems.length === 1 ? 'item' : 'items'} logged
         </CardDescription>
@@ -50,7 +50,7 @@ const FoodHistory = ({ foodItems, onDelete }: FoodHistoryProps) => {
           {sortedItems.map((item) => (
             <li 
               key={item.id}
-              className="border rounded-md overflow-hidden transition-all duration-200"
+              className="border rounded-md overflow-hidden transition-all duration-200 bg-white/50 hover:bg-white/80"
             >
               <div 
                 className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50"

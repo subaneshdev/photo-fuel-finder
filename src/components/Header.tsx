@@ -25,13 +25,13 @@ const Header = ({ calorieGoal, onChangeGoal }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-10">
+    <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-10 border-b border-nutrition-blue/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-gray-900 flex items-center">
-              <span className="text-nutrition-green mr-2">Nutri</span>
-              <span className="text-nutrition-blue">Vision</span>
+              <span className="bg-gradient-to-r from-nutrition-green to-nutrition-blue bg-clip-text text-transparent">Nutri</span>
+              <span className="bg-gradient-to-r from-nutrition-blue to-nutrition-red bg-clip-text text-transparent">Vision</span>
             </h1>
           </div>
           
