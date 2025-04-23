@@ -1,8 +1,9 @@
 
 import { useState } from "react";
-import { CalendarDays, Menu, X } from "lucide-react";
+import { CalendarDays, Menu, X, SlidersHorizontal } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { cn } from "../lib/utils";
+import DailyGoalDialog from "./DailyGoalDialog";
 
 interface HeaderProps {
   calorieGoal: number;
@@ -11,18 +12,6 @@ interface HeaderProps {
 
 const Header = ({ calorieGoal, onChangeGoal }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isEditingGoal, setIsEditingGoal] = useState(false);
-  const [tempGoal, setTempGoal] = useState(calorieGoal.toString());
-
-  const handleSaveGoal = () => {
-    const newGoal = parseInt(tempGoal);
-    if (!isNaN(newGoal) && newGoal > 0) {
-      onChangeGoal(newGoal);
-    } else {
-      setTempGoal(calorieGoal.toString());
-    }
-    setIsEditingGoal(false);
-  };
 
   return (
     <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-10 border-b border-nutrition-blue/20">
@@ -34,41 +23,34 @@ const Header = ({ calorieGoal, onChangeGoal }: HeaderProps) => {
               <span className="bg-gradient-to-r from-nutrition-blue to-nutrition-red bg-clip-text text-transparent">Vision</span>
             </h1>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-4">
             <div className="flex items-center text-sm text-gray-600">
               <CalendarDays className="w-4 h-4 mr-1" />
               <span>Today's Goal:</span>
-              {isEditingGoal ? (
-                <div className="ml-2 flex items-center">
-                  <input
-                    type="number"
-                    value={tempGoal}
-                    onChange={(e) => setTempGoal(e.target.value)}
-                    className="w-20 h-8 px-2 border border-gray-300 rounded-md text-sm"
-                    autoFocus
-                  />
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    onClick={handleSaveGoal} 
-                    className="ml-1 h-8"
-                  >
-                    Save
+              <span className="ml-2 font-semibold text-nutrition-blue">{calorieGoal} cal</span>
+              <DailyGoalDialog
+                trigger={
+                  <Button size="icon" variant="ghost" className="ml-2" aria-label="Set Daily Goal">
+                    <SlidersHorizontal className="h-5 w-5" />
                   </Button>
-                </div>
-              ) : (
-                <button 
-                  onClick={() => setIsEditingGoal(true)} 
-                  className="ml-2 font-semibold text-nutrition-blue hover:underline"
-                >
-                  {calorieGoal} cal
-                </button>
-              )}
+                }
+                initialGoal={calorieGoal}
+                onSetGoal={onChangeGoal}
+              />
             </div>
           </div>
-          
-          <div className="md:hidden">
+
+          <div className="md:hidden flex items-center gap-2">
+            <DailyGoalDialog
+              trigger={
+                <Button size="icon" variant="ghost" aria-label="Set Daily Goal">
+                  <SlidersHorizontal className="h-5 w-5" />
+                </Button>
+              }
+              initialGoal={calorieGoal}
+              onSetGoal={onChangeGoal}
+            />
             <Button 
               variant="ghost" 
               size="icon"
@@ -90,32 +72,9 @@ const Header = ({ calorieGoal, onChangeGoal }: HeaderProps) => {
             <div className="flex items-center text-sm text-gray-600">
               <CalendarDays className="w-4 h-4 mr-1" />
               <span>Today's Goal:</span>
+              <span className="font-semibold text-nutrition-blue ml-2">{calorieGoal} cal</span>
             </div>
-            {isEditingGoal ? (
-              <div className="flex items-center">
-                <input
-                  type="number"
-                  value={tempGoal}
-                  onChange={(e) => setTempGoal(e.target.value)}
-                  className="w-20 h-8 px-2 border border-gray-300 rounded-md text-sm"
-                />
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  onClick={handleSaveGoal} 
-                  className="ml-1 h-8"
-                >
-                  Save
-                </Button>
-              </div>
-            ) : (
-              <button 
-                onClick={() => setIsEditingGoal(true)} 
-                className="font-semibold text-nutrition-blue hover:underline"
-              >
-                {calorieGoal} cal
-              </button>
-            )}
+            {/* Goal dialog also included above in mobile header controls */}
           </div>
         </div>
       </div>
