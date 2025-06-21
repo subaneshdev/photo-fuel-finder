@@ -3,17 +3,23 @@
 ## Project info
 
 **URL**: https://lovable.dev/projects/c1284b37-a618-428a-bb2d-e840f2360b38
+ AI-powered calorie tracker and food identifier app that helps users:
 
-## How can I edit this code?
+Automatically identify food from photos or text descriptions.
+Estimate calorie and nutrient breakdown.
+Log daily meals and track caloric intake.
+Set fitness or weight goals (gain, lose, or maintain).
+Visualize weekly nutrition reports.
+Whether you’re on a fitness journey, managing a medical diet, or just curious about what you eat—CalorIQ has your back.
 
-There are several ways of editing your application.
+🔑 Key Features
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/c1284b37-a618-428a-bb2d-e840f2360b38) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
+📷 AI Food Identifier: Snap a photo, and the app identifies the food and estimates calories.
+🧾 Manual Logging: Enter meals by name or ingredients.
+📊 Daily Calorie Tracker: View your total intake and balance per day.
+🎯 Goal-Based Tracking: Customize your daily intake goals based on your fitness objectives.
+📆 Weekly Reports: See insights and trends in your eating habits.
+🔁 Meal History: Browse and reuse logged meals for convenience.
 **Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
