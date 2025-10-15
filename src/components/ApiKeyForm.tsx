@@ -75,7 +75,7 @@ const ApiKeyForm = () => {
         <CardTitle>Set Gemini API Key</CardTitle>
         <CardDescription>
           Your API key is stored locally in your browser and never sent to our servers.
-          We use the Gemini 1.5 Flash model for image recognition.
+          We use the Gemini 2.5 Flash model for image recognition.
         </CardDescription>
       </CardHeader>
       <CardContent>

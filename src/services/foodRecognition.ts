@@ -40,8 +40,8 @@ export async function recognizeFood(imageFile: File): Promise<FoodItem | null> {
 
     console.log("Calling Gemini API with image data...");
     
-    // Call Gemini API with the 1.5-flash model
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // Call Gemini API with the 2.5-flash model
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
